@@ -1,0 +1,24 @@
+message_auto_notify.notification.*:
+  type: config_entity
+  label: 'Notification config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    template:
+      type: string
+      label: 'Template'
+    notifier:
+      type: string
+      label: 'Notifier id'
+    use_remote_template:
+      type: bool
+      label: 'Use remote template'
+    remote_template:
+      type: string
+      label: 'Remote template'
+    uuid:
+      type: string

@@ -1,0 +1,6 @@
+entity.notification.add_form:
+  route_name: entity.notification.add_form
+  title: 'Add Notification'
+  appears_on:
+    - entity.notification.collection
+

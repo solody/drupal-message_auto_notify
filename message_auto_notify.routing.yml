@@ -1,0 +1,8 @@
+
+message_auto_notify.test_controller_test:
+  path: '/message_auto_notify/test'
+  defaults:
+    _controller: '\Drupal\message_auto_notify\Controller\TestController::test'
+    _title: 'test'
+  requirements:
+    _permission: 'access content'

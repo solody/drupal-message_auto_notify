@@ -1,0 +1,16 @@
+{
+  "name": "drupal/message_auto_notify",
+  "type": "drupal-module",
+  "description": "My Awesome Module",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/message_auto_notify",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/message_auto_notify",
+    "source": "http://cgit.drupalcode.org/message_auto_notify"
+  },
+  "require": {
+    "overtrue/wechat": "^3.3"
+  }
+}

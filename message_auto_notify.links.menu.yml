@@ -1,0 +1,7 @@
+entity.notification.collection:
+  title: 'Notification'
+  route_name: entity.notification.collection
+  description: 'admin Notification configs.'
+  parent: message.main_settings
+  weight: 99
+
