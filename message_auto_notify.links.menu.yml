@@ -1,7 +1,12 @@
+message_auto_notify.seeting:
+  title: '消息自动通知基本设置'
+  route_name: message_auto_notify.message_auto_notify_settings_form
+  description: '消息自动通知相关设置。'
+  parent: message.main_settings
+  weight: 0
 entity.notification.collection:
   title: 'Notification'
   route_name: entity.notification.collection
   description: 'admin Notification configs.'
   parent: message.main_settings
   weight: 99
-

@@ -38,84 +38,89 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *   }
  * )
  */
-class Notification extends ConfigEntityBase implements NotificationInterface
-{
+class Notification extends ConfigEntityBase implements NotificationInterface {
 
-    /**
-     * The Notification ID.
-     *
-     * @var string
-     */
-    protected $id;
+  /**
+   * The Notification ID.
+   *
+   * @var string
+   */
+  protected $id;
 
-    /**
-     * The Notification label.
-     *
-     * @var string
-     */
-    protected $label;
+  /**
+   * The Notification label.
+   *
+   * @var string
+   */
+  protected $label;
 
-    /**
-     * @var string
-     */
-    protected $template;
+  /**
+   * @var string
+   */
+  protected $template;
 
-    /**
-     * @var string
-     */
-    protected $notifier;
+  /**
+   * @var string
+   */
+  protected $notifier;
 
-    /**
-     * @var bool
-     */
-    protected $use_remote_template;
+  /**
+   * @var bool
+   */
+  protected $use_remote_template;
 
-    /**
-     * @var string
-     */
-    protected $remote_template;
+  /**
+   * @var string
+   */
+  protected $remote_template;
 
-    public function getTemplate()
-    {
-        return $this->template;
-    }
+  /**
+   * @var string
+   */
+  protected $message_link;
 
-    public function setTemplate($template)
-    {
-        $this->template = $template;
-        return $this;
-    }
+  public function getTemplate() {
+    return $this->template;
+  }
 
-    public function getNotifier()
-    {
-        return $this->notifier;
-    }
+  public function setTemplate($template) {
+    $this->template = $template;
+    return $this;
+  }
 
-    public function setNotifier($notifier)
-    {
-        $this->notifier = $notifier;
-        return $this;
-    }
+  public function getNotifier() {
+    return $this->notifier;
+  }
 
-    public function getUseRemoteTemplate()
-    {
-        return $this->use_remote_template;
-    }
+  public function setNotifier($notifier) {
+    $this->notifier = $notifier;
+    return $this;
+  }
 
-    public function setUseRemoteTemplate($use_remote_template)
-    {
-        $this->use_remote_template = $use_remote_template;
-        return $this;
-    }
+  public function getUseRemoteTemplate() {
+    return $this->use_remote_template;
+  }
 
-    public function getRemoteTemplate()
-    {
-        return $this->remote_template;
-    }
+  public function setUseRemoteTemplate($use_remote_template) {
+    $this->use_remote_template = $use_remote_template;
+    return $this;
+  }
 
-    public function setRemoteTemplate($remote_template)
-    {
-        $this->remote_template = $remote_template;
-        return $this;
-    }
+  public function getRemoteTemplate() {
+    return $this->remote_template;
+  }
+
+  public function setRemoteTemplate($remote_template) {
+    $this->remote_template = $remote_template;
+    return $this;
+  }
+
+  public function getMessageLink() {
+    return $this->message_link;
+  }
+
+  public function setMessageLink($message_link) {
+    $this->message_link = $message_link;
+    return $this;
+  }
 }

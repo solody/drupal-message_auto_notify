@@ -5,36 +5,36 @@
  * Contains message_auto_notify.module.
  */
 
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\message_notify\Plugin\Notifier\Manager;
 
 /**
  * Implements hook_help().
  */
-function message_auto_notify_help($route_name, RouteMatchInterface $route_match)
-{
-    switch ($route_name) {
-        // Main module help for the message_auto_notify module.
-        case 'help.page.message_auto_notify':
-            $output = '';
-            $output .= '<h3>' . t('About') . '</h3>';
-            $output .= '<p>' . t('My Awesome Module') . '</p>';
-            return $output;
+function message_auto_notify_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the message_auto_notify module.
+    case 'help.page.message_auto_notify':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('My Awesome Module') . '</p>';
+      return $output;
 
-        default:
-    }
+    default:
+  }
 }
 
 /**
  * Implements hook_theme().
  */
-function message_auto_notify_theme()
-{
-    return [
-        'message_auto_notify' => [
-            'render element' => 'children',
-        ],
-    ];
+function message_auto_notify_theme() {
+  return [
+    'message_auto_notify' => [
+      'render element' => 'children',
+    ],
+  ];
 }
 
 /**
@@ -43,22 +43,46 @@ function message_auto_notify_theme()
  * @param \Drupal\Core\Entity\EntityInterface $entity
  * @throws Exception
  */
-function message_auto_notify_entity_insert(Drupal\Core\Entity\EntityInterface $entity)
-{
-    if ($entity instanceof \Drupal\message\Entity\Message) {
-        // 使用自动发送配置发送消息
-        /** @var \Drupal\message_auto_notify\Entity\Notification[] $notifications */
-        $notifications = \Drupal\message_auto_notify\Entity\Notification::loadMultiple();
-        /** @var Manager $notifierManager */
-        $notifierManager = \Drupal::getContainer()->get('plugin.message_notify.notifier.manager');
-        foreach ($notifications as $notification) {
-            if ($notifierManager->hasDefinition($notification->getNotifier())) {
-                /** @var \Drupal\message_notify\Plugin\Notifier\MessageNotifierInterface $notifier */
-                $notifier = $notifierManager->createInstance($notification->getNotifier(), [
-                  'notification' => $notification
-                ], $entity);
-                $notifier->send();
-            }
-        }
+function message_auto_notify_entity_insert(Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity instanceof \Drupal\message\Entity\Message) {
+    // 使用自动发送配置发送消息
+    /** @var \Drupal\message_auto_notify\Entity\Notification[] $notifications */
+    $notifications = \Drupal\message_auto_notify\Entity\Notification::loadMultiple();
+    /** @var Manager $notifierManager */
+    $notifierManager = \Drupal::getContainer()->get('plugin.message_notify.notifier.manager');
+    foreach ($notifications as $notification) {
+      if ($notification->getTemplate() === $entity->bundle() && $notifierManager->hasDefinition($notification->getNotifier())) {
+        /** @var \Drupal\message_notify\Plugin\Notifier\MessageNotifierInterface $notifier */
+        $notifier = $notifierManager->createInstance($notification->getNotifier(), [
+          'notification' => $notification
+        ], $entity);
+        $notifier->send();
+      }
     }
+  }
+}
+
+
+/**
+ * Implements hook_entity_base_field_info().
+ */
+function message_auto_notify_entity_base_field_info(EntityTypeInterface $entity_type) {
+  $fields = [];
+
+  if ($entity_type->id() == 'message') {
+    $fields['message_link'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('消息关联的内容链接'))
+      ->setDefaultValue('')
+      ->setDisplayOptions('view', [
+        'label' => 'inline',
+        'type' => 'string'
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield'
+      ])
+      ->setDisplayConfigurable('view', true)
+      ->setDisplayConfigurable('form', true);
+  }
+
+  return $fields;
 }

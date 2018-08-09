@@ -6,3 +6,12 @@ message_auto_notify.test_controller_test:
     _title: 'test'
   requirements:
     _permission: 'access content'
+
+message_auto_notify.message_auto_notify_settings_form:
+  path: '/admin/message_auto_notify/form/settings'
+  defaults:
+    _form: '\Drupal\message_auto_notify\Form\SettingsForm'
+    _title: '消息自动通知基本设置'
+  requirements:
+    _access: 'TRUE'
+  
