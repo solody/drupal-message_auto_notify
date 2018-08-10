@@ -69,7 +69,7 @@ function message_auto_notify_entity_insert(Drupal\Core\Entity\EntityInterface $e
       $user_notify_setting_manager = \Drupal::service('message_auto_notify.user_notify_setting');
       $user_setting = $user_notify_setting_manager->getSetting($entity->getOwnerId());
       $user_closed_notify = false;
-      if (isset($user_setting[$notification->id()]) && !$user_setting) $user_closed_notify = true;
+      if (isset($user_setting[$notification->id()]) && $user_setting[$notification->id()] === false) $user_closed_notify = true;
 
       if (!$user_closed_notify &&
         $notification->getTemplate() === $entity->bundle() &&
