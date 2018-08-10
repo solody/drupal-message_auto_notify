@@ -4,3 +4,8 @@ entity.notification.add_form:
   appears_on:
     - entity.notification.collection
 
+entity.user_notify_setting.add_form:
+  route_name: entity.user_notify_setting.add_form
+  title: 'Add User notify setting'
+  appears_on:
+    - entity.user_notify_setting.collection

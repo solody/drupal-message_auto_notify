@@ -10,3 +10,17 @@ entity.notification.collection:
   description: 'admin Notification configs.'
   parent: message.main_settings
   weight: 99
+
+# User notify setting menu items definition
+entity.user_notify_setting.collection:
+  title: 'User notify setting list'
+  route_name: entity.user_notify_setting.collection
+  description: 'List User notify setting entities'
+  parent: system.admin_structure
+  weight: 100
+
+user_notify_setting.admin.structure.settings:
+  title: 'User notify setting settings'
+  description: 'Configure User notify setting entities'
+  route_name: user_notify_setting.settings
+  parent: system.admin_structure

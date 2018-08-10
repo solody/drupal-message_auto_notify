@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\message_notify\Plugin\Notifier\Manager;
+use Drupal\user\RoleInterface;
 
 /**
  * Implements hook_help().
@@ -38,6 +39,18 @@ function message_auto_notify_theme() {
 }
 
 /**
+ * Implements hook_install().
+ */
+function message_auto_notify_install() {
+
+  // 为已认证用户添加权限
+  user_role_grant_permissions(RoleInterface::AUTHENTICATED_ID, [
+    'restful patch message_auto_notify_user_notify_setting',
+    'restful get message_auto_notify_user_notify_setting'
+  ]);
+}
+
+/**
  * Implements hook_entity_insert().
  *
  * @param \Drupal\Core\Entity\EntityInterface $entity
@@ -51,7 +64,16 @@ function message_auto_notify_entity_insert(Drupal\Core\Entity\EntityInterface $e
     /** @var Manager $notifierManager */
     $notifierManager = \Drupal::getContainer()->get('plugin.message_notify.notifier.manager');
     foreach ($notifications as $notification) {
-      if ($notification->getTemplate() === $entity->bundle() && $notifierManager->hasDefinition($notification->getNotifier())) {
+      // 检查用户设置，如果用户关闭了通知则不发送
+      /** @var \Drupal\message_auto_notify\UserNotifySettingManagerInterface $user_notify_setting_manager */
+      $user_notify_setting_manager = \Drupal::service('message_auto_notify.user_notify_setting');
+      $user_setting = $user_notify_setting_manager->getSetting($entity->getOwnerId());
+      $user_closed_notify = false;
+      if (isset($user_setting[$notification->id()]) && !$user_setting) $user_closed_notify = true;
+
+      if (!$user_closed_notify &&
+        $notification->getTemplate() === $entity->bundle() &&
+        $notifierManager->hasDefinition($notification->getNotifier())) {
         /** @var \Drupal\message_notify\Plugin\Notifier\MessageNotifierInterface $notifier */
         $notifier = $notifierManager->createInstance($notification->getNotifier(), [
           'notification' => $notification

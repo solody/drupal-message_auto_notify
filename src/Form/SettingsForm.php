@@ -73,10 +73,10 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // Display result.
-    foreach ($form_state->getValues() as $key => $value) {
-      drupal_set_message($key . ': ' . $value);
-    }
+    parent::submitForm($form, $form_state);
 
+    $this->config('message_auto_notify.settings')
+      ->set('wechat_notifier_wechat_connect_app', $form_state->getValue('wechat_notifier_wechat_connect_app'))
+      ->save();
   }
 }

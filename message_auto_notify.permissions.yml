@@ -1,0 +1,16 @@
+add user notify setting entities:
+  title: 'Create new User notify setting entities'
+
+administer user notify setting entities:
+  title: 'Administer User notify setting entities'
+  description: 'Allow to access the administration form to configure User notify setting entities.'
+  restrict access: true
+
+delete user notify setting entities:
+  title: 'Delete User notify setting entities'
+
+edit user notify setting entities:
+  title: 'Edit User notify setting entities'
+
+view user notify setting entities:
+  title: 'View User notify setting entities'

@@ -1,0 +1,4 @@
+services:
+  message_auto_notify.user_notify_setting:
+    class: Drupal\message_auto_notify\UserNotifySettingManager
+    arguments: []
