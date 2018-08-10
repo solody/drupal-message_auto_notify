@@ -105,7 +105,7 @@ class UserNotifySetting extends ResourceBase {
 
     $build = [
       '#cache' => [
-        'tags' => ['user_notify_setting_list'],
+        'tags' => ['user_notify_setting_list', 'notification_list'],
       ],
     ];
     $cache_metadata = \Drupal\Core\Cache\CacheableMetadata::createFromRenderArray($build);
