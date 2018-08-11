@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   title = @Translation("SMS"),
  *   descriptions = @Translation("Send messages via SMS."),
  *   viewModes = {
- *     "sms_body"
+ *     "default"
  *   }
  * )
  */
@@ -95,11 +95,25 @@ class Sms extends MessageNotifierBase {
    * {@inheritdoc}
    */
   public function deliver(array $output = []) {
+    $phone = null;
+    if (!$this->message->get('phone')->isEmpty()) {
+      $phone = $this->message->get('phone')->value;
+    } else {
+      $phone = $this->message->getOwner()->get('phone')->value;
+    }
+
+    if (empty($phone)) {
+      \Drupal::logger('message_auto_notify')->notice('一条短信通知发送失败，因为找不到手机号：' . $this->message->getText());
+      return;
+    }
+
+    $content = (string)$this->message->getText()[0];
+
     /** @var \Drupal\sms\Provider\SmsProviderInterface $sms_service */
     $sms_service = \Drupal::service('sms.provider');
     $sms = (new \Drupal\sms\Message\SmsMessage())
-      ->setMessage($output['sms_body'])// Set the message.
-      ->addRecipient($this->message->getOwner()->get('phone')->value)// Set recipient phone number
+      ->setMessage($content)// Set the message.
+      ->addRecipient($phone)// Set recipient phone number
       ->setDirection(\Drupal\sms\Direction::OUTGOING);
 
     if ($this->configuration['notification']) {
@@ -117,8 +131,10 @@ class Sms extends MessageNotifierBase {
       return true;
     } catch (\Drupal\sms\Exception\RecipientRouteException $e) {
       // Thrown if no gateway could be determined for the message.
+      \Drupal::logger('message_auto_notify')->notice($e->getMessage() . $this->message->getText());
     } catch (\Exception $e) {
       // Other exceptions can be thrown.
+      \Drupal::logger('message_auto_notify')->notice($e->getMessage() . $this->message->getText());
     }
   }
 }

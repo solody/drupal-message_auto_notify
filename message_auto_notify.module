@@ -104,6 +104,19 @@ function message_auto_notify_entity_base_field_info(EntityTypeInterface $entity_
       ])
       ->setDisplayConfigurable('view', true)
       ->setDisplayConfigurable('form', true);
+
+    $fields['phone'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('消息发送手机号码'))
+      ->setDescription('如果此值为空，通知器会尝试使用user对象的phone字段')
+      ->setDisplayOptions('view', [
+        'label' => 'inline',
+        'type' => 'string'
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield'
+      ])
+      ->setDisplayConfigurable('view', true)
+      ->setDisplayConfigurable('form', true);
   }
 
   return $fields;
