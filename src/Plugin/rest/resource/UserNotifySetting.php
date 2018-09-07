@@ -110,6 +110,7 @@ class UserNotifySetting extends ResourceBase {
     ];
     $cache_metadata = \Drupal\Core\Cache\CacheableMetadata::createFromRenderArray($build);
     $response->addCacheableDependency($cache_metadata);
+    $response->addCacheableDependency($this->currentUser);
 
     return $response;
   }
