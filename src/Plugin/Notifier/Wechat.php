@@ -53,9 +53,15 @@ class Wechat extends MessageNotifierBase implements AutoNotifySupportiveInterfac
     if ($application) {
       /** @var Notification $auto_notification */
       $auto_notification = $this->configuration['notification'];
+
+      $wechat_args = [];
+      foreach ($this->message->getArguments() as $key => $argument) {
+        $wechat_args[str_replace('@', '', $key)] = $argument;
+      }
+
       $rs = $application->sendTemplateMessage($this->message->getOwnerId(),
         $auto_notification->getRemoteTemplate(),
-        $this->message->getArguments(),
+        $wechat_args,
         $this->message->get('message_link')->value);
       if (!$rs) {
         \Drupal::logger('message_auto_notify')->notice('消息自动通知没有成功。');
