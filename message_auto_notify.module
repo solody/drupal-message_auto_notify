@@ -74,11 +74,15 @@ function message_auto_notify_entity_insert(Drupal\Core\Entity\EntityInterface $e
       if (!$user_closed_notify &&
         $notification->getTemplate() === $entity->bundle() &&
         $notifierManager->hasDefinition($notification->getNotifier())) {
-        /** @var \Drupal\message_notify\Plugin\Notifier\MessageNotifierInterface $notifier */
-        $notifier = $notifierManager->createInstance($notification->getNotifier(), [
-          'notification' => $notification
-        ], $entity);
-        $notifier->send();
+        try {
+          /** @var \Drupal\message_notify\Plugin\Notifier\MessageNotifierInterface $notifier */
+          $notifier = $notifierManager->createInstance($notification->getNotifier(), [
+            'notification' => $notification
+          ], $entity);
+          $notifier->send();
+        } catch (\Exception $exception) {
+          \Drupal::logger('message_auto_notify')->error('消息发送失败！发送器：' . $notification->getNotifier() . '，消息：'. $entity->id().'，错误：'.$exception->getMessage());
+        }
       }
     }
   }
