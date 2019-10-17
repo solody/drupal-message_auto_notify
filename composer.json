@@ -11,7 +11,7 @@
     "source": "http://cgit.drupalcode.org/message_auto_notify"
   },
   "require": {
-    "overtrue/wechat": "^3.3",
+    "overtrue/wechat": "^4.2",
     "drupal/message_notify": "^1.1"
   }
 }
