@@ -29,6 +29,15 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *     "label" = "label",
  *     "uuid" = "uuid"
  *   },
+ *   config_export = {
+ *     "id",
+ *     "label",
+ *     "template",
+ *     "notifier",
+ *     "use_remote_template",
+ *     "remote_template",
+ *     "message_link"
+ *   },
  *   links = {
  *     "canonical" = "/admin/config/message/notification/{notification}",
  *     "add-form" = "/admin/config/message/notification/add",
@@ -55,72 +64,113 @@ class Notification extends ConfigEntityBase implements NotificationInterface {
   protected $label;
 
   /**
+   * The Notification template.
+   *
    * @var string
    */
   protected $template;
 
   /**
+   * The Notification notifier.
+   *
    * @var string
    */
   protected $notifier;
 
   /**
+   * Whether to use remote template.
+   *
    * @var bool
    */
   protected $use_remote_template;
 
   /**
+   * The remote template.
+   *
    * @var string
    */
   protected $remote_template;
 
   /**
+   * The message link.
+   *
    * @var string
    */
   protected $message_link;
 
+  /**
+   * {@inheritdoc}
+   */
   public function getTemplate() {
     return $this->template;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function setTemplate($template) {
     $this->template = $template;
     return $this;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getNotifier() {
     return $this->notifier;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function setNotifier($notifier) {
     $this->notifier = $notifier;
     return $this;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getUseRemoteTemplate() {
     return $this->use_remote_template;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function setUseRemoteTemplate($use_remote_template) {
     $this->use_remote_template = $use_remote_template;
     return $this;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getRemoteTemplate() {
     return $this->remote_template;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function setRemoteTemplate($remote_template) {
     $this->remote_template = $remote_template;
     return $this;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getMessageLink() {
     return $this->message_link;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function setMessageLink($message_link) {
     $this->message_link = $message_link;
     return $this;
   }
+
 }

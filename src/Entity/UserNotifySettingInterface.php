@@ -13,15 +13,13 @@ use Drupal\user\EntityOwnerInterface;
  */
 interface UserNotifySettingInterface extends ContentEntityInterface, EntityChangedInterface, EntityOwnerInterface {
 
-  // Add get/set methods for your configuration properties here.
-
   /**
    * Gets the User notify setting data.
    *
    * @return array
    *   Data of the User notify setting.
    */
-  public function getData();
+  public function getData(): array;
 
   /**
    * Sets the User notify setting data.
@@ -32,7 +30,7 @@ interface UserNotifySettingInterface extends ContentEntityInterface, EntityChang
    * @return \Drupal\message_auto_notify\Entity\UserNotifySettingInterface
    *   The called User notify setting entity.
    */
-  public function setData($data);
+  public function setData(array $data);
 
   /**
    * Gets the User notify setting creation timestamp.
@@ -40,7 +38,7 @@ interface UserNotifySettingInterface extends ContentEntityInterface, EntityChang
    * @return int
    *   Creation timestamp of the User notify setting.
    */
-  public function getCreatedTime();
+  public function getCreatedTime(): int;
 
   /**
    * Sets the User notify setting creation timestamp.
@@ -51,6 +49,6 @@ interface UserNotifySettingInterface extends ContentEntityInterface, EntityChang
    * @return \Drupal\message_auto_notify\Entity\UserNotifySettingInterface
    *   The called User notify setting entity.
    */
-  public function setCreatedTime($timestamp);
+  public function setCreatedTime(int $timestamp): self;
 
 }

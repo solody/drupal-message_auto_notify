@@ -59,17 +59,11 @@ class UserNotifySetting extends ContentEntityBase implements UserNotifySettingIn
   /**
    * {@inheritdoc}
    */
-  public static function preCreate(EntityStorageInterface $storage_controller, array &$values) {
-    parent::preCreate($storage_controller, $values);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function getData() {
     if (empty($this->get('data')->value)) {
       return [];
-    } else {
+    }
+    else {
       return unserialize($this->get('data')->value);
     }
   }
@@ -77,7 +71,7 @@ class UserNotifySetting extends ContentEntityBase implements UserNotifySettingIn
   /**
    * {@inheritdoc}
    */
-  public function setData($data) {
+  public function setData(array $data) {
     $this->set('data', serialize($data));
     return $this;
   }
@@ -92,7 +86,7 @@ class UserNotifySetting extends ContentEntityBase implements UserNotifySettingIn
   /**
    * {@inheritdoc}
    */
-  public function setCreatedTime($timestamp) {
+  public function setCreatedTime(int $timestamp) {
     $this->set('created', $timestamp);
     return $this;
   }
@@ -134,13 +128,13 @@ class UserNotifySetting extends ContentEntityBase implements UserNotifySettingIn
     $fields = parent::baseFieldDefinitions($entity_type);
 
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('配置所属用户'))
+      ->setLabel(t('Owner'))
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
       ->setRequired(TRUE);
 
     $fields['data'] = BaseFieldDefinition::create('string_long')
-      ->setLabel(t('配置数据'))
+      ->setLabel(t('Setting data'))
       ->setRequired(TRUE);
 
     $fields['created'] = BaseFieldDefinition::create('created')

@@ -20,5 +20,6 @@ message_auto_notify.notification.*:
     remote_template:
       type: string
       label: 'Remote template'
-    uuid:
+    message_link:
       type: string
+      label: 'Message link'
