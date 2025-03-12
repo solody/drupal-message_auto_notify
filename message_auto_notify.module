@@ -13,23 +13,20 @@ use Drupal\message_notify\Plugin\Notifier\Manager;
 /**
  * Implements hook_help().
  */
-function message_auto_notify_help($route_name, RouteMatchInterface $route_match) {
-  switch ($route_name) {
-    // Main module help for the message_auto_notify module.
-    case 'help.page.message_auto_notify':
-      $output = '';
-      $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('My Awesome Module') . '</p>';
-      return $output;
-
-    default:
+function message_auto_notify_help($route_name, RouteMatchInterface $route_match): ?string {
+  $output = NULL;
+  // Main module help for the message_auto_notify module.
+  if ($route_name == 'help.page.message_auto_notify') {
+    $output = '<h3>' . t('About') . '</h3>';
+    $output .= '<p>' . t('Automatically notify users when a new message is created.') . '</p>';
   }
+  return $output;
 }
 
 /**
  * Implements hook_theme().
  */
-function message_auto_notify_theme() {
+function message_auto_notify_theme(): array {
   return [
     'message_auto_notify' => [
       'render element' => 'children',
@@ -43,15 +40,15 @@ function message_auto_notify_theme() {
  * @param \Drupal\Core\Entity\EntityInterface $entity
  * @throws Exception
  */
-function message_auto_notify_entity_insert(Drupal\Core\Entity\EntityInterface $entity) {
+function message_auto_notify_entity_insert(Drupal\Core\Entity\EntityInterface $entity): void {
   if ($entity instanceof \Drupal\message\Entity\Message) {
-    // 使用自动发送配置发送消息
+    // Send notifications base on the settings.
     /** @var \Drupal\message_auto_notify\Entity\Notification[] $notifications */
     $notifications = \Drupal\message_auto_notify\Entity\Notification::loadMultiple();
     /** @var Manager $notifierManager */
     $notifierManager = \Drupal::getContainer()->get('plugin.message_notify.notifier.manager');
     foreach ($notifications as $notification) {
-      // 检查用户设置，如果用户关闭了通知则不发送
+      // Check if the user has closed the notification.
       /** @var \Drupal\message_auto_notify\UserNotifySettingManagerInterface $user_notify_setting_manager */
       $user_notify_setting_manager = \Drupal::service('message_auto_notify.user_notify_setting');
       $user_setting = $user_notify_setting_manager->getSetting($entity->getOwnerId());
@@ -68,7 +65,7 @@ function message_auto_notify_entity_insert(Drupal\Core\Entity\EntityInterface $e
           ], $entity);
           $notifier->send();
         } catch (\Exception $exception) {
-          \Drupal::logger('message_auto_notify')->error('消息发送失败！发送器：' . $notification->getNotifier() . '，消息：'. $entity->id().'，错误：'.$exception->getMessage());
+          \Drupal::logger('message_auto_notify')->error('Notification fails to send! Notifier is ' . $notification->getNotifier() . ', message is '. $entity->id().', error: '.$exception->getMessage());
         }
       }
     }
@@ -79,12 +76,12 @@ function message_auto_notify_entity_insert(Drupal\Core\Entity\EntityInterface $e
 /**
  * Implements hook_entity_base_field_info().
  */
-function message_auto_notify_entity_base_field_info(EntityTypeInterface $entity_type) {
+function message_auto_notify_entity_base_field_info(EntityTypeInterface $entity_type): array {
   $fields = [];
 
   if ($entity_type->id() == 'message') {
     $fields['message_link'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('消息关联的内容链接'))
+      ->setLabel(t('Business link of the message'))
       ->setDefaultValue('')
       ->setDisplayOptions('view', [
         'label' => 'inline',
@@ -97,8 +94,8 @@ function message_auto_notify_entity_base_field_info(EntityTypeInterface $entity_
       ->setDisplayConfigurable('form', true);
 
     $fields['phone'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('消息发送手机号码'))
-      ->setDescription('如果此值为空，通知器会尝试使用user对象的phone字段')
+      ->setLabel(t('Phone number'))
+      ->setDescription('If this is not set, notifier will try to use the phone of the user.')
       ->setDisplayOptions('view', [
         'label' => 'inline',
         'type' => 'string'

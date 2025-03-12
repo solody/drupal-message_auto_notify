@@ -6,7 +6,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Class UserNotifySettingSettingsForm.
+ * Form to config user_notify_setting entity.
  *
  * @ingroup message_auto_notify
  */
@@ -19,7 +19,7 @@ class UserNotifySettingSettingsForm extends FormBase {
    *   The unique string identifying the form.
    */
   public function getFormId() {
-    return 'usernotifysetting_settings';
+    return 'user_notify_setting_settings';
   }
 
   /**
@@ -46,7 +46,7 @@ class UserNotifySettingSettingsForm extends FormBase {
    *   Form definition array.
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['usernotifysetting_settings']['#markup'] = 'Settings form for User notify setting entities. Manage field settings here.';
+    $form['user_notify_setting_settings']['#markup'] = 'Settings form for User notify setting entities. Manage field settings here.';
     return $form;
   }
 

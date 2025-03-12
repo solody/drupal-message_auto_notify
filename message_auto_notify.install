@@ -11,8 +11,6 @@ use Drupal\user\RoleInterface;
  * Implements hook_install().
  */
 function message_auto_notify_install() {
-
-  // 为已认证用户添加权限
   user_role_grant_permissions(RoleInterface::AUTHENTICATED_ID, [
     'restful patch message_auto_notify_user_notify_setting',
     'restful get message_auto_notify_user_notify_setting'

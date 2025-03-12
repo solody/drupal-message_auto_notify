@@ -7,7 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\wechat_connect\Entity\WechatApplication;
 
 /**
- * Class SettingsForm.
+ * Settings Form.
  */
 class SettingsForm extends ConfigFormBase {
 
@@ -40,7 +40,7 @@ class SettingsForm extends ConfigFormBase {
     $wechat_connect_applications = WechatApplication::loadMultiple();
     $options = [];
     foreach ($wechat_connect_applications as $wechat_connect_application) {
-      /** @var $wechat_connect_application WechatApplication */
+      /** @var \Drupal\wechat_connect\Entity\WechatApplication $wechat_connect_application */
       if ($wechat_connect_application->getType() === 'media_platform') {
         $options[$wechat_connect_application->id()] = $wechat_connect_application->label();
       }
@@ -48,8 +48,8 @@ class SettingsForm extends ConfigFormBase {
 
     $form['wechat_notifier_wechat_connect_app'] = [
       '#type' => 'select',
-      '#title' => $this->t('微信连接应用'),
-      '#description' => $this->t('微信模板消息通知器所使用的微信连接应用'),
+      '#title' => $this->t('Wechat Connect Application'),
+      '#description' => $this->t('The Wechat Connect Application to use for sending notifications.'),
       '#options' => $options,
       '#default_value' => $config->get('wechat_notifier_wechat_connect_app'),
       '#weight' => '0',
@@ -79,4 +79,5 @@ class SettingsForm extends ConfigFormBase {
       ->set('wechat_notifier_wechat_connect_app', $form_state->getValue('wechat_notifier_wechat_connect_app'))
       ->save();
   }
+
 }

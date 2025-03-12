@@ -3,15 +3,12 @@
 namespace Drupal\message_auto_notify\Form;
 
 use Drupal\commerce\EntityHelper;
-use Drupal\Console\Bootstrap\Drupal;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\message\Entity\MessageTemplate;
-use Drupal\message_auto_notify\Entity\Notification;
-use Drupal\message_notify\Plugin\Notifier\Manager;
 
 /**
- * Class NotificationForm.
+ * Notification edit Form.
  */
 class NotificationForm extends EntityForm {
 
@@ -21,7 +18,7 @@ class NotificationForm extends EntityForm {
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
 
-    /** @var Notification $notification */
+    /** @var \Drupal\message_auto_notify\Entity\Notification $notification */
     $notification = $this->entity;
     $form['label'] = [
       '#type' => 'textfield',
@@ -41,7 +38,7 @@ class NotificationForm extends EntityForm {
       '#disabled' => !$notification->isNew(),
     ];
 
-    /** @var Manager $notifierManager */
+    /** @var \Drupal\message_notify\Plugin\Notifier\Manager $notifierManager */
     $notifierManager = \Drupal::getContainer()->get('plugin.message_notify.notifier.manager');
     $notifierOptionList = [];
     foreach ($notifierManager->getDefinitions() as $definition) {
@@ -52,7 +49,7 @@ class NotificationForm extends EntityForm {
       '#title' => $this->t('Notifier'),
       '#default_value' => $notification->getNotifier(),
       '#options' => $notifierOptionList,
-      '#required' => TRUE
+      '#required' => TRUE,
     ];
 
     $form['template'] = [
@@ -60,7 +57,7 @@ class NotificationForm extends EntityForm {
       '#title' => $this->t('Template'),
       '#default_value' => $notification->getTemplate(),
       '#options' => EntityHelper::extractLabels(MessageTemplate::loadMultiple()),
-      '#required' => TRUE
+      '#required' => TRUE,
     ];
 
     $form['use_remote_template'] = [
@@ -75,15 +72,15 @@ class NotificationForm extends EntityForm {
       '#maxlength' => 255,
       '#default_value' => $notification->getRemoteTemplate(),
       '#description' => $this->t("Remote template name."),
-      '#required' => false,
+      '#required' => FALSE,
       '#states' => [
         // Only show this field when the 'toggle_me' checkbox is enabled.
         'visible' => [
           ':input[name="use_remote_template"]' => [
-            'checked' => TRUE
-          ]
-        ]
-      ]
+            'checked' => TRUE,
+          ],
+        ],
+      ],
     ];
 
     /* You will need additional form elements for your custom properties. */
@@ -100,13 +97,13 @@ class NotificationForm extends EntityForm {
 
     switch ($status) {
       case SAVED_NEW:
-        drupal_set_message($this->t('Created the %label Notification.', [
+        $this->messenger()->addMessage($this->t('Created the %label Notification.', [
           '%label' => $notification->label(),
         ]));
         break;
 
       default:
-        drupal_set_message($this->t('Saved the %label Notification.', [
+        $this->messenger()->addMessage($this->t('Saved the %label Notification.', [
           '%label' => $notification->label(),
         ]));
     }

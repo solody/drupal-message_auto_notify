@@ -16,7 +16,7 @@ class UserNotifySettingForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    /* @var $entity \Drupal\message_auto_notify\Entity\UserNotifySetting */
+    /** @var \Drupal\message_auto_notify\Entity\UserNotifySetting $entity */
     $form = parent::buildForm($form, $form_state);
 
     $entity = $this->entity;
@@ -34,13 +34,13 @@ class UserNotifySettingForm extends ContentEntityForm {
 
     switch ($status) {
       case SAVED_NEW:
-        drupal_set_message($this->t('Created the %label User notify setting.', [
+        $this->messenger()->addMessage($this->t('Created the %label User notify setting.', [
           '%label' => $entity->label(),
         ]));
         break;
 
       default:
-        drupal_set_message($this->t('Saved the %label User notify setting.', [
+        $this->messenger()->addMessage($this->t('Saved the %label User notify setting.', [
           '%label' => $entity->label(),
         ]));
     }

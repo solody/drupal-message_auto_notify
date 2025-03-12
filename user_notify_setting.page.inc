@@ -19,7 +19,7 @@ use Drupal\Core\Render\Element;
  *   - elements: An associative array containing the user information and any
  *   - attributes: HTML attributes for the containing element.
  */
-function template_preprocess_user_notify_setting(array &$variables) {
+function template_preprocess_user_notify_setting(array &$variables): void {
   // Fetch UserNotifySetting Entity Object.
   $user_notify_setting = $variables['elements']['#user_notify_setting'];
 

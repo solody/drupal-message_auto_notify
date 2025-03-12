@@ -5,33 +5,56 @@ namespace Drupal\message_auto_notify;
 use Drupal\message_auto_notify\Entity\UserNotifySetting;
 
 /**
- * Interface UserNotifySettingManagerInterface.
+ * Interface of UserNotifySettingManager.
  */
 interface UserNotifySettingManagerInterface {
 
   /**
-   * @param $uid
+   * Get notify setting by uid.
+   *
+   * @param int $uid
+   *   The user id.
+   *
    * @return array
+   *   The notify setting of the given user.
    */
-  public function getSetting($uid);
+  public function getSetting(int $uid): array;
 
   /**
-   * @param $uid
+   * Modify notify setting by uid.
+   *
+   * @param int $uid
+   *   The user id.
    * @param array $data
+   *   The new setting data to apply.
+   *
    * @return array
+   *   The new notify setting saved.
    */
-  public function modifySetting($uid, array $data);
+  public function modifySetting(int $uid, array $data): array;
 
   /**
-   * @param $uid
-   * @return UserNotifySetting|null
+   * Load user setting entity by uid.
+   *
+   * @param int $uid
+   *   The user id.
+   *
+   * @return \Drupal\message_auto_notify\Entity\UserNotifySetting|null
+   *   The user setting entity or null if not found.
    */
-  public function loadUserSettingEntity($uid);
+  public function loadUserSettingEntity(int $uid): ?UserNotifySetting;
 
   /**
-   * @param $uid
-   * @param $data
-   * @return UserNotifySetting
+   * Create user setting entity for given user.
+   *
+   * @param int $uid
+   *   The user id.
+   * @param array $data
+   *   The setting data to create the entity.
+   *
+   * @return \Drupal\message_auto_notify\Entity\UserNotifySetting
+   *   The created and saved user setting entity.
    */
-  public function createUserSetting($uid, $data);
+  public function createUserSetting(int $uid, array $data): UserNotifySetting;
+
 }

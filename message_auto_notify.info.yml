@@ -1,6 +1,6 @@
 name: 'Message Auto Notify'
 type: module
-description: 'My Awesome Module'
+description: 'Automatically notify users when a new message is created.'
 core_version_requirement: ^10 || ^11
 package: Custom
 dependencies:

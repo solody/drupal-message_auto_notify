@@ -2,7 +2,6 @@
 
 namespace Drupal\message_auto_notify\Entity;
 
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
@@ -59,7 +58,7 @@ class UserNotifySetting extends ContentEntityBase implements UserNotifySettingIn
   /**
    * {@inheritdoc}
    */
-  public function getData() {
+  public function getData(): array {
     if (empty($this->get('data')->value)) {
       return [];
     }
@@ -79,14 +78,14 @@ class UserNotifySetting extends ContentEntityBase implements UserNotifySettingIn
   /**
    * {@inheritdoc}
    */
-  public function getCreatedTime() {
+  public function getCreatedTime(): int {
     return $this->get('created')->value;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setCreatedTime(int $timestamp) {
+  public function setCreatedTime(int $timestamp): UserNotifySettingInterface {
     $this->set('created', $timestamp);
     return $this;
   }

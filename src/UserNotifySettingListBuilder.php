@@ -13,7 +13,6 @@ use Drupal\Core\Link;
  */
 class UserNotifySettingListBuilder extends EntityListBuilder {
 
-
   /**
    * {@inheritdoc}
    */
@@ -27,7 +26,7 @@ class UserNotifySettingListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    /* @var $entity \Drupal\message_auto_notify\Entity\UserNotifySetting */
+    /** @var \Drupal\message_auto_notify\Entity\UserNotifySetting $entity */
     $row['id'] = $entity->id();
     $row['name'] = Link::createFromRoute(
       $entity->label(),
