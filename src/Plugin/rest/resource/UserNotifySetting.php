@@ -2,6 +2,7 @@
 
 namespace Drupal\message_auto_notify\Plugin\rest\resource;
 
+use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\message_auto_notify\UserNotifySettingManager;
 use Drupal\rest\ModifiedResourceResponse;
@@ -12,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
- * Provides a resource to get view modes by entity and bundle.
+ * Provides a resource to get and update user notify settings.
  *
  * @RestResource(
  *   id = "message_auto_notify_user_notify_setting",
@@ -26,15 +27,13 @@ class UserNotifySetting extends ResourceBase {
 
   /**
    * A current user instance.
-   *
-   * @var \Drupal\Core\Session\AccountProxyInterface
    */
-  protected $currentUser;
+  protected AccountProxyInterface $currentUser;
 
   /**
-   * @var UserNotifySettingManager
+   * The user notify setting manager.
    */
-  protected $userNotifySettingManager;
+  protected UserNotifySettingManager $userNotifySettingManager;
 
   /**
    * Constructs a new UserNotifySetting object.
@@ -51,7 +50,8 @@ class UserNotifySetting extends ResourceBase {
    *   A logger instance.
    * @param \Drupal\Core\Session\AccountProxyInterface $current_user
    *   A current user instance.
-   * @param UserNotifySettingManager $userNotifySettingManager
+   * @param \Drupal\message_auto_notify\UserNotifySettingManager $user_notify_setting_manager
+   *   The user notify setting manager.
    */
   public function __construct(
     array $configuration,
@@ -60,11 +60,12 @@ class UserNotifySetting extends ResourceBase {
     array $serializer_formats,
     LoggerInterface $logger,
     AccountProxyInterface $current_user,
-    UserNotifySettingManager $userNotifySettingManager) {
+    UserNotifySettingManager $user_notify_setting_manager,
+  ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition, $serializer_formats, $logger);
 
     $this->currentUser = $current_user;
-    $this->userNotifySettingManager = $userNotifySettingManager;
+    $this->userNotifySettingManager = $user_notify_setting_manager;
   }
 
   /**
@@ -87,55 +88,38 @@ class UserNotifySetting extends ResourceBase {
    *
    * @return \Drupal\rest\ResourceResponse
    *   The HTTP response object.
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function get() {
-
-    // You must to implement the logic of your REST Resource here.
-    // Use current user after pass authentication to validate access.
+  public function get(): ResourceResponse {
     if (!$this->currentUser->hasPermission('access content')) {
       throw new AccessDeniedHttpException();
     }
-
     $setting = $this->userNotifySettingManager->getSetting($this->currentUser->id());
-
-    $response =  new ResourceResponse($setting, 200);
-
+    $response = new ResourceResponse($setting, 200);
     $build = [
       '#cache' => [
         'tags' => ['user_notify_setting_list', 'notification_list'],
       ],
     ];
-    $cache_metadata = \Drupal\Core\Cache\CacheableMetadata::createFromRenderArray($build);
+    $cache_metadata = CacheableMetadata::createFromRenderArray($build);
     $response->addCacheableDependency($cache_metadata);
     $response->addCacheableDependency($this->currentUser);
-
     return $response;
   }
 
   /**
    * Responds to PATCH requests.
    *
-   * @param $data
+   * @param array $data
+   *   The data to apply to the user notify setting.
+   *
    * @return \Drupal\rest\ModifiedResourceResponse
    *   The HTTP response object.
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function patch($data) {
-
-    // You must to implement the logic of your REST Resource here.
-    // Use current user after pass authentication to validate access.
+  public function patch(array $data): ModifiedResourceResponse {
     if (!$this->currentUser->hasPermission('access content')) {
       throw new AccessDeniedHttpException();
     }
-
     $setting = $this->userNotifySettingManager->modifySetting($this->currentUser->id(), $data);
-
     return new ModifiedResourceResponse($setting, 200);
   }
 

@@ -2,12 +2,13 @@
 
 namespace Drupal\message_auto_notify\Plugin\Notifier;
 
+use Drupal\sms\Exception\RecipientRouteException;
+use Drupal\sms\Direction;
+use Drupal\sms\Message\SmsMessage;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\message\MessageInterface;
-use Drupal\message_auto_notify\Entity\Notification;
-use Drupal\message_auto_notify\Entity\NotificationInterface;
 use Drupal\message_notify\Plugin\Notifier\MessageNotifierBase;
 use Drupal\sms\Provider\PhoneNumberProviderInterface;
 use Drupal\sms\Provider\SmsProviderInterface;
@@ -63,7 +64,7 @@ class Sms extends MessageNotifierBase {
    * @param \Drupal\sms\Provider\SmsProviderInterface $sms_provider
    *   The SMS provider service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, LoggerChannelInterface $logger, EntityTypeManagerInterface $entity_type_manager, RendererInterface $render, MessageInterface $message = NULL, PhoneNumberProviderInterface $phone_number_provider, SmsProviderInterface $sms_provider) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, LoggerChannelInterface $logger, EntityTypeManagerInterface $entity_type_manager, RendererInterface $render, ?MessageInterface $message = NULL, PhoneNumberProviderInterface $phone_number_provider, SmsProviderInterface $sms_provider) {
     // Set configuration defaults.
     $configuration += [
       'mail' => FALSE,
@@ -77,7 +78,7 @@ class Sms extends MessageNotifierBase {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MessageInterface $message = NULL) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, ?MessageInterface $message = NULL) {
     return new static(
       $configuration,
       $plugin_id,
@@ -95,10 +96,11 @@ class Sms extends MessageNotifierBase {
    * {@inheritdoc}
    */
   public function deliver(array $output = []) {
-    $phone = null;
+    $phone = NULL;
     if (!$this->message->get('phone')->isEmpty()) {
       $phone = $this->message->get('phone')->value;
-    } else {
+    }
+    else {
       $phone = $this->message->getOwner()->get('phone')->value;
     }
 
@@ -107,17 +109,19 @@ class Sms extends MessageNotifierBase {
       return;
     }
 
-    $content = (string)$this->message->getText()[0];
+    $content = (string) $this->message->getText()[0];
 
     /** @var \Drupal\sms\Provider\SmsProviderInterface $sms_service */
     $sms_service = \Drupal::service('sms.provider');
-    $sms = (new \Drupal\sms\Message\SmsMessage())
-      ->setMessage($content)// Set the message.
-      ->addRecipient($phone)// Set recipient phone number
-      ->setDirection(\Drupal\sms\Direction::OUTGOING);
+    $sms = (new SmsMessage())
+    // Set the message.
+      ->setMessage($content)
+    // Set recipient phone number.
+      ->addRecipient($phone)
+      ->setDirection(Direction::OUTGOING);
 
     if ($this->configuration['notification']) {
-      /** @var NotificationInterface $notification */
+      /** @var \Drupal\message_auto_notify\Entity\NotificationInterface $notification */
       $notification = $this->configuration['notification'];
 
       if ($notification->getUseRemoteTemplate()) {
@@ -128,13 +132,16 @@ class Sms extends MessageNotifierBase {
 
     try {
       $sms_service->send($sms);
-      return true;
-    } catch (\Drupal\sms\Exception\RecipientRouteException $e) {
+      return TRUE;
+    }
+    catch (RecipientRouteException $e) {
       // Thrown if no gateway could be determined for the message.
       \Drupal::logger('message_auto_notify')->notice($e->getMessage() . $this->message->getText());
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       // Other exceptions can be thrown.
       \Drupal::logger('message_auto_notify')->notice($e->getMessage() . $this->message->getText());
     }
   }
+
 }
