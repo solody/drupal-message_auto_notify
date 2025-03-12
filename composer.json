@@ -11,6 +11,7 @@
     "source": "https://git.drupalcode.org/project/message_auto_notify"
   },
   "require": {
-    "drupal/message_notify": "^1.5"
+    "drupal/message_notify": "^1.5",
+    "jpush/jpush": "^3.7.0"
   }
 }
