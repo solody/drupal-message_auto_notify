@@ -1,3 +1,11 @@
+message_auto_notify.settings:
+  type: config_object
+  label: 'Settings of message_auto_notify module'
+  mapping:
+    wechat_notifier_wechat_connect_app:
+      type: string
+      label: 'Wechat connect application for wechat notifier'
+
 message_auto_notify.notification.*:
   type: config_entity
   label: 'Notification config'

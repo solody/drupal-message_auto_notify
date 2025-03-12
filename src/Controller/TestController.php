@@ -2,33 +2,30 @@
 
 namespace Drupal\message_auto_notify\Controller;
 
-use Drupal\commerce_payment\Entity\PaymentGateway;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\message\Entity\Message;
 use Drupal\rest\ModifiedResourceResponse;
 
 /**
- * Class TestController.
+ * Controller to test message notification.
  */
 class TestController extends ControllerBase {
 
   /**
-   * Test.
+   * Response to the request.
    *
-   * @return string
+   * @return \Drupal\rest\ModifiedResourceResponse
    *   Return Hello string.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function test() {
+  public function test(): ModifiedResourceResponse {
     $message = Message::create(['template' => 'distribution_commission']);
     $message->setArguments([
-      '@amount' => 200
+      '@amount' => 200,
     ]);
     $message->setOwnerId(4);
     $message->save();
-    $entity = PaymentGateway::load('wechat_pay_h5_client');
-    print_r([
-      $entity
-    ]);
     return new ModifiedResourceResponse();
   }
 
