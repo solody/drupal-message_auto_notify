@@ -80,19 +80,6 @@ function message_auto_notify_entity_base_field_info(EntityTypeInterface $entity_
   $fields = [];
 
   if ($entity_type->id() == 'message') {
-    $fields['message_link'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Business link of the message'))
-      ->setDefaultValue('')
-      ->setDisplayOptions('view', [
-        'label' => 'inline',
-        'type' => 'string'
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'string_textfield'
-      ])
-      ->setDisplayConfigurable('view', true)
-      ->setDisplayConfigurable('form', true);
-
     $fields['phone'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Phone number'))
       ->setDescription('If this is not set, notifier will try to use the phone of the user.')
