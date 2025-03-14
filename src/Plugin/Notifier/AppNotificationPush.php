@@ -39,7 +39,7 @@ class AppNotificationPush extends MessageNotifierBase {
       $client = new Client('cba0b2959d6ab8aef88025b5', '61f8c6ec1a5dfa5111e11206');
       $pusher = $client->push();
       $pusher->setPlatform('all');
-      $pusher->addAlias('user' . $this->message->getOwnerId());
+      $pusher->addAlias('user#' . $this->message->getOwnerId());
       $pusher->setNotificationAlert($content);
       $pusher->send();
       return TRUE;
