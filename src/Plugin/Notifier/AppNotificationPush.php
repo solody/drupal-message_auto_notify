@@ -2,17 +2,8 @@
 
 namespace Drupal\message_auto_notify\Plugin\Notifier;
 
-use JPush\Exceptions\JPushException;
 use JPush\Client;
-use Drupal\sms\Exception\RecipientRouteException;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\Core\Render\RendererInterface;
-use Drupal\message\MessageInterface;
 use Drupal\message_notify\Plugin\Notifier\MessageNotifierBase;
-use Drupal\sms\Provider\PhoneNumberProviderInterface;
-use Drupal\sms\Provider\SmsProviderInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * SMS notifier.
