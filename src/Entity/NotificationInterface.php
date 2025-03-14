@@ -49,14 +49,4 @@ interface NotificationInterface extends ConfigEntityInterface {
    */
   public function setRemoteTemplate($remote_template);
 
-  /**
-   * Gets the message link.
-   */
-  public function getMessageLink();
-
-  /**
-   * Sets the message link.
-   */
-  public function setMessageLink($message_link);
-
 }

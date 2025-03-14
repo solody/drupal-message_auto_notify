@@ -28,6 +28,3 @@ message_auto_notify.notification.*:
     remote_template:
       type: string
       label: 'Remote template'
-    message_link:
-      type: string
-      label: 'Message link'

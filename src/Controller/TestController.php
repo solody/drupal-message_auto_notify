@@ -20,7 +20,7 @@ class TestController extends ControllerBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function test(): ModifiedResourceResponse {
-    $message = Message::create(['template' => 'order_refunded']);
+    $message = Message::create(['template' => 'new_read_content_published']);
     $message->setArguments([
       '@amount' => 200,
     ]);

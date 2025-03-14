@@ -35,8 +35,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *     "template",
  *     "notifier",
  *     "use_remote_template",
- *     "remote_template",
- *     "message_link"
+ *     "remote_template"
  *   },
  *   links = {
  *     "canonical" = "/admin/config/message/notification/{notification}",
@@ -90,13 +89,6 @@ class Notification extends ConfigEntityBase implements NotificationInterface {
    * @var string
    */
   protected $remote_template;
-
-  /**
-   * The message link.
-   *
-   * @var string
-   */
-  protected $message_link;
 
   /**
    * {@inheritdoc}
@@ -155,21 +147,6 @@ class Notification extends ConfigEntityBase implements NotificationInterface {
    */
   public function setRemoteTemplate($remote_template) {
     $this->remote_template = $remote_template;
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getMessageLink() {
-    return $this->message_link;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setMessageLink($message_link) {
-    $this->message_link = $message_link;
     return $this;
   }
 
