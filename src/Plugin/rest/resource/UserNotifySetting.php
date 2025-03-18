@@ -10,7 +10,6 @@ use Drupal\rest\Plugin\ResourceBase;
 use Drupal\rest\ResourceResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Provides a resource to get and update user notify settings.
@@ -90,14 +89,15 @@ class UserNotifySetting extends ResourceBase {
    *   The HTTP response object.
    */
   public function get(): ResourceResponse {
-    if (!$this->currentUser->hasPermission('access content')) {
-      throw new AccessDeniedHttpException();
-    }
-    $setting = $this->userNotifySettingManager->getSetting($this->currentUser->id());
+    $setting = [
+      'notification' => $this->userNotifySettingManager->getNotificationSettings($this->currentUser->id()),
+      'client' => $this->userNotifySettingManager->getClientSettings($this->currentUser->id()),
+    ];
     $response = new ResourceResponse($setting, 200);
     $build = [
       '#cache' => [
         'tags' => ['user_notify_setting_list', 'notification_list'],
+        'contexts' => ['user'],
       ],
     ];
     $cache_metadata = CacheableMetadata::createFromRenderArray($build);
@@ -116,10 +116,16 @@ class UserNotifySetting extends ResourceBase {
    *   The HTTP response object.
    */
   public function patch(array $data): ModifiedResourceResponse {
-    if (!$this->currentUser->hasPermission('access content')) {
-      throw new AccessDeniedHttpException();
+    $setting = [
+      'notification' => $this->userNotifySettingManager->getNotificationSettings($this->currentUser->id()),
+      'client' => $this->userNotifySettingManager->getClientSettings($this->currentUser->id()),
+    ];
+    if (isset($data['notification'])) {
+      $setting = $this->userNotifySettingManager->modifyNotificationSettings($this->currentUser->id(), $data['notification']);
     }
-    $setting = $this->userNotifySettingManager->modifySetting($this->currentUser->id(), $data);
+    if (isset($data['client'])) {
+      $setting = $this->userNotifySettingManager->modifyClientSettings($this->currentUser->id(), $data['client']);
+    }
     return new ModifiedResourceResponse($setting, 200);
   }
 
