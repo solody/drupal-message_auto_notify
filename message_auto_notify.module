@@ -49,7 +49,7 @@ function message_auto_notify_entity_insert(Drupal\Core\Entity\EntityInterface $e
     $notifierManager = \Drupal::getContainer()->get('plugin.message_notify.notifier.manager');
 
     /** @var \Drupal\message_auto_notify\UserNotifySettingManagerInterface $user_notify_setting_manager */
-    $user_notify_setting_manager = \Drupal::service('message_auto_notify.user_notify_setting');
+    $user_notify_setting_manager = \Drupal::service('message_auto_notify.user_notify_setting_manager');
 
     /** @var \Drupal\message_auto_notify\Entity\Notification[] $notifications */
     $notifications = Notification::loadMultiple();

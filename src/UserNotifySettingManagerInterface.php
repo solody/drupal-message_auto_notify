@@ -10,18 +10,18 @@ use Drupal\message_auto_notify\Entity\UserNotifySetting;
 interface UserNotifySettingManagerInterface {
 
   /**
-   * Get notify setting by uid.
+   * Get notification settings by uid.
    *
    * @param int $uid
    *   The user id.
    *
    * @return array
-   *   The notify setting of the given user.
+   *   The notification settings of the given user.
    */
   public function getNotificationSettings(int $uid): array;
 
   /**
-   * Modify notify setting by uid.
+   * Modify notification settings by uid.
    *
    * @param int $uid
    *   The user id.
@@ -29,9 +29,33 @@ interface UserNotifySettingManagerInterface {
    *   The new setting data to apply.
    *
    * @return array
-   *   The new notify setting saved.
+   *   The new notification settings saved.
    */
   public function modifyNotificationSettings(int $uid, array $data): array;
+
+  /**
+   * Get client settings by uid.
+   *
+   * @param int $uid
+   *   The user id.
+   *
+   * @return array
+   *   The client settings of the given user.
+   */
+  public function getClientSettings(int $uid): array;
+
+  /**
+   * Modify client settings by uid.
+   *
+   * @param int $uid
+   *   The user id.
+   * @param array $data
+   *   The new setting data to apply.
+   *
+   * @return array
+   *   The new client settings saved.
+   */
+  public function modifyClientSettings(int $uid, array $data): array;
 
   /**
    * Load user setting entity by uid.
@@ -49,12 +73,14 @@ interface UserNotifySettingManagerInterface {
    *
    * @param int $uid
    *   The user id.
-   * @param array $data
-   *   The setting data to create the entity.
+   * @param array $notification_settings
+   *   The notification settings data to create the entity.
+   * @param array $client_settings
+   *   The client settings data to create the entity.
    *
    * @return \Drupal\message_auto_notify\Entity\UserNotifySetting
    *   The created and saved user setting entity.
    */
-  public function createUserSetting(int $uid, array $data): UserNotifySetting;
+  public function createUserSetting(int $uid, array $notification_settings, array $client_settings): UserNotifySetting;
 
 }

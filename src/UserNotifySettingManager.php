@@ -48,16 +48,44 @@ class UserNotifySettingManager implements UserNotifySettingManagerInterface {
       $user_setting_entity->save();
     }
     else {
-      $user_setting_entity = $this->createUserSetting($uid, $data);
+      $user_setting_entity = $this->createUserSetting($uid, $data, []);
     }
-
     return $user_setting_entity->getNotificationSettings() + $this->getDefaultNotificationSettings();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getClientSettings(int $uid): array {
+    $user_setting_entity = $this->loadUserSettingEntity($uid);
+    if ($user_setting_entity) {
+      return $user_setting_entity->getClientSettings();
+    }
+    else {
+      return [];
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function modifyClientSettings(int $uid, array $data): array {
+    $user_setting_entity = $this->loadUserSettingEntity($uid);
+    if ($user_setting_entity) {
+      $data += $user_setting_entity->getClientSettings();
+      $user_setting_entity->setClientSettings($data);
+      $user_setting_entity->save();
+    }
+    else {
+      $user_setting_entity = $this->createUserSetting($uid, [], $data);
+    }
+    return $user_setting_entity->getClientSettings() + [];
   }
 
   /**
    * Get the default setting.
    */
-  private function getDefaultNotificationSettings() {
+  private function getDefaultNotificationSettings(): array {
     if (empty($this->notifications)) {
       $this->notifications = Notification::loadMultiple();
     }
@@ -89,10 +117,11 @@ class UserNotifySettingManager implements UserNotifySettingManagerInterface {
   /**
    * {@inheritdoc}
    */
-  public function createUserSetting(int $uid, array $data): UserNotifySetting {
+  public function createUserSetting(int $uid, array $notification_settings, array $client_settings): UserNotifySetting {
     $entity = UserNotifySetting::create([
       'uid' => $uid,
-      'data' => serialize($data),
+      'notification_settings' => $notification_settings,
+      'client_settings' => $client_settings,
     ]);
     $entity->save();
     return $entity;
