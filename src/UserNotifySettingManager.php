@@ -2,6 +2,7 @@
 
 namespace Drupal\message_auto_notify;
 
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\message_auto_notify\Entity\Notification;
 use Drupal\message_auto_notify\Entity\UserNotifySetting;
 
@@ -9,6 +10,13 @@ use Drupal\message_auto_notify\Entity\UserNotifySetting;
  * The UserNotifySettingManager service.
  */
 class UserNotifySettingManager implements UserNotifySettingManagerInterface {
+
+  /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected ModuleHandlerInterface $moduleHandler;
 
   /**
    * The notifications.
@@ -20,8 +28,8 @@ class UserNotifySettingManager implements UserNotifySettingManagerInterface {
   /**
    * Constructs a new UserNotifySettingManager object.
    */
-  public function __construct() {
-
+  public function __construct(ModuleHandlerInterface $module_handler) {
+    $this->moduleHandler = $module_handler;
   }
 
   /**
@@ -59,10 +67,10 @@ class UserNotifySettingManager implements UserNotifySettingManagerInterface {
   public function getClientSettings(int $uid): array {
     $user_setting_entity = $this->loadUserSettingEntity($uid);
     if ($user_setting_entity) {
-      return $user_setting_entity->getClientSettings();
+      return $user_setting_entity->getClientSettings() + $this->getDefaultClientSettings();
     }
     else {
-      return [];
+      return $this->getDefaultClientSettings();
     }
   }
 
@@ -79,11 +87,11 @@ class UserNotifySettingManager implements UserNotifySettingManagerInterface {
     else {
       $user_setting_entity = $this->createUserSetting($uid, [], $data);
     }
-    return $user_setting_entity->getClientSettings() + [];
+    return $user_setting_entity->getClientSettings() + $this->getDefaultClientSettings();
   }
 
   /**
-   * Get the default setting.
+   * Get the default notification settings.
    */
   private function getDefaultNotificationSettings(): array {
     if (empty($this->notifications)) {
@@ -97,6 +105,18 @@ class UserNotifySettingManager implements UserNotifySettingManagerInterface {
     }
 
     return $setting;
+  }
+
+  /**
+   * Get the default client settings.
+   */
+  private function getDefaultClientSettings(): array {
+    $default_client_settings = [];
+    $this->moduleHandler->alter(
+      'default_client_settings',
+      $default_client_settings
+    );
+    return $default_client_settings;
   }
 
   /**
