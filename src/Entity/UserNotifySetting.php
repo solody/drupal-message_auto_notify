@@ -35,10 +35,10 @@ use Drupal\user\UserInterface;
  *   base_table = "user_notify_setting",
  *   admin_permission = "administer user notify setting entities",
  *   entity_keys = {
- *     "id" = "id",
+ *     "id" = "uns_id",
  *     "label" = "id",
  *     "uuid" = "uuid",
- *     "uid" = "user_id",
+ *     "uid" = "uid",
  *     "langcode" = "langcode"
  *   },
  *   links = {
@@ -58,20 +58,40 @@ class UserNotifySetting extends ContentEntityBase implements UserNotifySettingIn
   /**
    * {@inheritdoc}
    */
-  public function getData(): array {
-    if (empty($this->get('data')->value)) {
+  public function getNotificationSettings(): array {
+    if ($this->get('notification_settings')->isEmpty()) {
       return [];
     }
     else {
-      return unserialize($this->get('data')->value);
+      return $this->get('notification_settings')->offsetGet(0)->getValue();
     }
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setData(array $data) {
-    $this->set('data', serialize($data));
+  public function setNotificationSettings(array $data): UserNotifySettingInterface {
+    $this->set('notification_settings', $data);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getClientSettings(): array {
+    if ($this->get('client_settings')->isEmpty()) {
+      return [];
+    }
+    else {
+      return $this->get('client_settings')->offsetGet(0)->getValue();
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setClientSettings(array $data): UserNotifySettingInterface {
+    $this->set('client_settings', $data);
     return $this;
   }
 
@@ -94,21 +114,21 @@ class UserNotifySetting extends ContentEntityBase implements UserNotifySettingIn
    * {@inheritdoc}
    */
   public function getOwner() {
-    return $this->get('user_id')->entity;
+    return $this->get('uid')->entity;
   }
 
   /**
    * {@inheritdoc}
    */
   public function getOwnerId() {
-    return $this->get('user_id')->target_id;
+    return $this->get('uid')->target_id;
   }
 
   /**
    * {@inheritdoc}
    */
   public function setOwnerId($uid) {
-    $this->set('user_id', $uid);
+    $this->set('uid', $uid);
     return $this;
   }
 
@@ -116,7 +136,7 @@ class UserNotifySetting extends ContentEntityBase implements UserNotifySettingIn
    * {@inheritdoc}
    */
   public function setOwner(UserInterface $account) {
-    $this->set('user_id', $account->id());
+    $this->set('uid', $account->id());
     return $this;
   }
 
@@ -126,14 +146,18 @@ class UserNotifySetting extends ContentEntityBase implements UserNotifySettingIn
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
 
-    $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
+    $fields['uid'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Owner'))
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
       ->setRequired(TRUE);
 
-    $fields['data'] = BaseFieldDefinition::create('string_long')
-      ->setLabel(t('Setting data'))
+    $fields['notification_settings'] = BaseFieldDefinition::create('map')
+      ->setLabel(t('Switcher settings for each notification.'))
+      ->setRequired(TRUE);
+
+    $fields['client_settings'] = BaseFieldDefinition::create('map')
+      ->setLabel(t('Settings persistence for client customized.'))
       ->setRequired(TRUE);
 
     $fields['created'] = BaseFieldDefinition::create('created')

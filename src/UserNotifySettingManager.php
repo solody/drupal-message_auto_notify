@@ -27,37 +27,37 @@ class UserNotifySettingManager implements UserNotifySettingManagerInterface {
   /**
    * {@inheritdoc}
    */
-  public function getSetting(int $uid): array {
+  public function getNotificationSettings(int $uid): array {
     $user_setting_entity = $this->loadUserSettingEntity($uid);
     if ($user_setting_entity) {
-      return $user_setting_entity->getData() + $this->getDefaultSetting();
+      return $user_setting_entity->getNotificationSettings() + $this->getDefaultNotificationSettings();
     }
     else {
-      return $this->getDefaultSetting();
+      return $this->getDefaultNotificationSettings();
     }
   }
 
   /**
    * {@inheritdoc}
    */
-  public function modifySetting(int $uid, array $data): array {
+  public function modifyNotificationSettings(int $uid, array $data): array {
     $user_setting_entity = $this->loadUserSettingEntity($uid);
     if ($user_setting_entity) {
-      $data += $user_setting_entity->getData();
-      $user_setting_entity->setData($data);
+      $data += $user_setting_entity->getNotificationSettings();
+      $user_setting_entity->setNotificationSettings($data);
       $user_setting_entity->save();
     }
     else {
       $user_setting_entity = $this->createUserSetting($uid, $data);
     }
 
-    return $user_setting_entity->getData() + $this->getDefaultSetting();
+    return $user_setting_entity->getNotificationSettings() + $this->getDefaultNotificationSettings();
   }
 
   /**
    * Get the default setting.
    */
-  private function getDefaultSetting() {
+  private function getDefaultNotificationSettings() {
     if (empty($this->notifications)) {
       $this->notifications = Notification::loadMultiple();
     }
@@ -76,7 +76,7 @@ class UserNotifySettingManager implements UserNotifySettingManagerInterface {
    */
   public function loadUserSettingEntity(int $uid): ?UserNotifySetting {
     $user_notify_settings = \Drupal::entityTypeManager()->getStorage('user_notify_setting')->loadByProperties([
-      'user_id' => $uid,
+      'uid' => $uid,
     ]);
     if (count($user_notify_settings)) {
       return array_pop($user_notify_settings);
@@ -91,7 +91,7 @@ class UserNotifySettingManager implements UserNotifySettingManagerInterface {
    */
   public function createUserSetting(int $uid, array $data): UserNotifySetting {
     $entity = UserNotifySetting::create([
-      'user_id' => $uid,
+      'uid' => $uid,
       'data' => serialize($data),
     ]);
     $entity->save();

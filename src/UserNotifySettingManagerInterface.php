@@ -18,7 +18,7 @@ interface UserNotifySettingManagerInterface {
    * @return array
    *   The notify setting of the given user.
    */
-  public function getSetting(int $uid): array;
+  public function getNotificationSettings(int $uid): array;
 
   /**
    * Modify notify setting by uid.
@@ -31,7 +31,7 @@ interface UserNotifySettingManagerInterface {
    * @return array
    *   The new notify setting saved.
    */
-  public function modifySetting(int $uid, array $data): array;
+  public function modifyNotificationSettings(int $uid, array $data): array;
 
   /**
    * Load user setting entity by uid.
