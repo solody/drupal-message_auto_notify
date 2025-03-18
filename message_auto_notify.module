@@ -44,6 +44,8 @@ function message_auto_notify_theme(): array {
 function message_auto_notify_entity_insert(Drupal\Core\Entity\EntityInterface $entity): void {
   if ($entity instanceof MessageInterface) {
     // Send notifications base on the settings.
+    /** @var \Drupal\message\MessageInterface $message */
+    $message = $entity;
 
     /** @var \Drupal\message_notify\Plugin\Notifier\Manager $notifierManager */
     $notifierManager = \Drupal::getContainer()->get('plugin.message_notify.notifier.manager');
@@ -55,11 +57,11 @@ function message_auto_notify_entity_insert(Drupal\Core\Entity\EntityInterface $e
     $notifications = Notification::loadMultiple();
 
     foreach ($notifications as $notification) {
-      if ($notification->getTemplate() === $entity->bundle()
+      if ($notification->getTemplate() === $message->bundle()
         && $notifierManager->hasDefinition($notification->getNotifier())) {
 
         // Check if the user has closed the notification.
-        $user_settings = $user_notify_setting_manager->getNotificationSettings($entity->getOwnerId());
+        $user_settings = $user_notify_setting_manager->getNotificationSettings($message->getOwnerId());
         $user_closed_notify = false;
         if (isset($user_settings[$notification->id()]) && $user_settings[$notification->id()] === false) $user_closed_notify = true;
 
@@ -68,7 +70,7 @@ function message_auto_notify_entity_insert(Drupal\Core\Entity\EntityInterface $e
             /** @var \Drupal\message_notify\Plugin\Notifier\MessageNotifierInterface $notifier */
             $notifier = $notifierManager->createInstance($notification->getNotifier(), [
               'notification' => $notification
-            ], $entity);
+            ], $message);
             $notifier->send();
           } catch (\Exception $exception) {
             \Drupal::logger('message_auto_notify')->error('Notification fails to send! Notifier is ' . $notification->getNotifier() . ', message is '. $entity->id().', error: '.$exception->getMessage());
