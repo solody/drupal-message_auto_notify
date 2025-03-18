@@ -78,7 +78,7 @@ class UserNotifySetting extends ResourceBase {
       $container->getParameter('serializer.formats'),
       $container->get('logger.factory')->get('message_auto_notify'),
       $container->get('current_user'),
-      $container->get('message_auto_notify.user_notify_setting')
+      $container->get('message_auto_notify.user_notify_setting_manager')
     );
   }
 
