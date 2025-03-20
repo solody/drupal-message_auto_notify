@@ -4,6 +4,7 @@ namespace Drupal\message_auto_notify\Plugin\rest\resource;
 
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\message_auto_notify\Entity\UserNotifySettingInterface;
 use Drupal\message_auto_notify\UserNotifySettingManager;
 use Drupal\rest\ModifiedResourceResponse;
 use Drupal\rest\Plugin\ResourceBase;
@@ -93,17 +94,23 @@ class UserNotifySetting extends ResourceBase {
       'notification' => $this->userNotifySettingManager->getNotificationSettings($this->currentUser->id()),
       'client' => $this->userNotifySettingManager->getClientSettings($this->currentUser->id()),
     ];
-    $entity = $this->userNotifySettingManager->loadUserSettingEntity($this->currentUser->id());
     $response = new ResourceResponse($setting, 200);
+
+    $entity = $this->userNotifySettingManager->loadUserSettingEntity($this->currentUser->id());
+    $tags = ['user_notify_setting_list', 'notification_list'];
+    if ($entity instanceof UserNotifySettingInterface) {
+      $tags[] = 'user_notify_setting:' . $entity->id();
+    }
     $build = [
       '#cache' => [
-        'tags' => ['user_notify_setting:' . $entity->id(), 'user_notify_setting_list', 'notification_list'],
+        'tags' => $tags,
         'contexts' => ['user'],
       ],
     ];
     $cache_metadata = CacheableMetadata::createFromRenderArray($build);
     $response->addCacheableDependency($cache_metadata);
     $response->addCacheableDependency($this->currentUser);
+
     return $response;
   }
 
