@@ -25,7 +25,7 @@ class AppNotificationPush extends MessageNotifierBase {
    * {@inheritdoc}
    */
   public function deliver(array $output = []): bool {
-    $content = implode('', $this->message->getText());
+    $content = strip_tags(implode('', $this->message->getText()));
     try {
       $client = new Client(
         'cba0b2959d6ab8aef88025b5',
