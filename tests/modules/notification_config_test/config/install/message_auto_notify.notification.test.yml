@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: test
+label: 'Evidence rejected'
+template: evidence_rejected
+notifier: app_notification_push
+use_remote_template: false
+remote_template: ''

@@ -1,0 +1,7 @@
+name: 'notification_config_test'
+type: module
+description: 'notification_config_test'
+core_version_requirement: ^10 || ^11
+package: Testing
+dependencies:
+  - message_auto_notify:message_auto_notify

@@ -2,7 +2,7 @@
 
 namespace Drupal\message_auto_notify\Form;
 
-use Drupal\commerce\EntityHelper;
+use Drupal\message_auto_notify\EntityHelper;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\message\Entity\MessageTemplate;
