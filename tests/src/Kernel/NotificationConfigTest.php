@@ -15,6 +15,15 @@ final class NotificationConfigTest extends UserNotifySettingTestBase {
   /**
    * {@inheritdoc}
    */
+  protected static $configSchemaCheckerExclusions = [
+    // Following are used to test lack of or partial schema. Where partial
+    // schema is provided, that is explicitly tested in specific tests.
+    'message_auto_notify.notification.test',
+  ];
+
+  /**
+   * {@inheritdoc}
+   */
   protected static $modules = ['notification_config_test'];
 
   /**

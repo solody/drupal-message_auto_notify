@@ -4,6 +4,8 @@
  * @file
  * Contains message_auto_notify.install.
  */
+
+use Drupal\Core\Config\ImmutableConfig;
 use Drupal\user\RoleInterface;
 
 
@@ -11,8 +13,24 @@ use Drupal\user\RoleInterface;
  * Implements hook_install().
  */
 function message_auto_notify_install() {
-  user_role_grant_permissions(RoleInterface::AUTHENTICATED_ID, [
-    'restful patch message_auto_notify_user_notify_setting',
-    'restful get message_auto_notify_user_notify_setting'
-  ]);
+  $storage = \Drupal::service('config.storage');
+  if ($storage->exists('rest.resource.message_auto_notify_user_notify_setting')) {
+    user_role_grant_permissions(RoleInterface::AUTHENTICATED_ID, [
+      'restful patch message_auto_notify_user_notify_setting',
+      'restful get message_auto_notify_user_notify_setting'
+    ]);
+  }
+}
+
+/**
+ * Update hook to convert integer to boolean for 'use_remote_template' setting.
+ */
+function message_auto_notify_update_8001() {
+  $config_factory = \Drupal::configFactory();
+  // Find all views configs.
+  foreach ($config_factory->listAll('message_auto_notify.notification.') as $config_name) {
+    $config = $config_factory->getEditable($config_name);
+    $config->set('use_remote_template', boolval($config->get('use_remote_template')));
+    $config->save();
+  }
 }

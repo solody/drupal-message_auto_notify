@@ -5,5 +5,5 @@ id: test
 label: 'Evidence rejected'
 template: evidence_rejected
 notifier: app_notification_push
-use_remote_template: false
+use_remote_template: 0
 remote_template: ''
