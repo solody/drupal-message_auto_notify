@@ -5,7 +5,6 @@
  * Contains message_auto_notify.install.
  */
 
-use Drupal\Core\Config\ImmutableConfig;
 use Drupal\user\RoleInterface;
 
 

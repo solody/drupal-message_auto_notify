@@ -35,12 +35,22 @@ class Update8001Test extends UpdatePathTestBase {
    * Tests that numeric argument plugins are updated properly.
    */
   public function testAddingProductWeightField(): void {
+    // $this->assertTrue(function_exists('message_auto_notify_update_8001'), 'The message_auto_notify_update_8001() has been loaded');
+
+    /** @var \Drupal\Core\Update\UpdateHookRegistry $update_registry */
+    $update_registry = \Drupal::service('update.update_hook_registry');
+    $this->assertEquals(8000, $update_registry->getInstalledVersion('message_auto_notify'));
+
     $config = \Drupal::configFactory()->get('message_auto_notify.notification.test');
     $this->assertEquals(0, $config->get('use_remote_template'));
 
     $this->runUpdates();
     $config = \Drupal::configFactory()->get('message_auto_notify.notification.test');
     $this->assertFalse($config->get('use_remote_template'));
+
+    /** @var \Drupal\Core\Update\UpdateHookRegistry $update_registry */
+    $update_registry = \Drupal::service('update.update_hook_registry');
+    $this->assertEquals(8001, $update_registry->getInstalledVersion('message_auto_notify'));
   }
 
 }
